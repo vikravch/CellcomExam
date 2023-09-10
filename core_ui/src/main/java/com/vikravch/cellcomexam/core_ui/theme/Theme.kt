@@ -1,4 +1,4 @@
-package com.vikravch.cellcomexam.ui.theme
+package com.vikravch.cellcomexam.core_ui.theme
 
 import android.app.Activity
 import android.os.Build

@@ -37,6 +37,9 @@ android {
 }
 
 dependencies {
+    implementation(project(Modules.core))
+    implementation(project(Modules.movies_domain))
+
     implementation(Retrofit.okHttp)
     implementation(Retrofit.retrofit)
     implementation(Retrofit.okHttpLoggingInterceptor)

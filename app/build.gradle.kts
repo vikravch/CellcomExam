@@ -48,6 +48,14 @@ android {
 }
 
 dependencies {
+
+    implementation(project(Modules.core))
+    implementation(project(Modules.core_ui))
+
+    implementation(project(Modules.movies_domain))
+    implementation(project(Modules.movies_data))
+    implementation(project(Modules.movies_presentation))
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -65,6 +73,11 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+
+    implementation(Compose.navigation)
+    implementation(Compose.viewModelCompose)
+    implementation(Compose.activityCompose)
+    implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
 }

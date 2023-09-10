@@ -14,6 +14,8 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CellcomExam"
 include(":app")
+include(":core")
+include(":core_ui")
 include(":modules")
 include(":modules:movies")
 include(":modules:movies:movies_data")
