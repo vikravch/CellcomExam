@@ -6,6 +6,7 @@ import com.vikravch.cellcomexam.movies_domain.use_case.GetCurrentlyBroadcastFilm
 import com.vikravch.cellcomexam.movies_domain.use_case.GetFavouriteFilms
 import com.vikravch.cellcomexam.movies_domain.use_case.GetPopularFilms
 import com.vikravch.cellcomexam.movies_domain.use_case.ToggleFavourite
+import com.vikravch.cellcomexam.movies_domain.use_case.GetMovieDetails
 import com.vikravch.cellcomexam.movies_domain.use_case.MoviesUseCases
 import dagger.Module
 import dagger.Provides
@@ -24,10 +25,11 @@ class MoviesDomainModule {
         preferencesRepository: PreferencesRepository
     ): MoviesUseCases {
         return MoviesUseCases(
-            getPopularFilms = GetPopularFilms(repository),
+            getPopularFilms = GetPopularFilms(repository, preferencesRepository),
             markAsFavourite = ToggleFavourite(preferencesRepository),
-            getFavouriteFilms = GetFavouriteFilms(repository, preferencesRepository),
-            getCurrentlyBroadcastFilms = GetCurrentlyBroadcastFilms(repository)
+            getFavouriteFilms = GetFavouriteFilms(preferencesRepository),
+            getCurrentlyBroadcastFilms = GetCurrentlyBroadcastFilms(repository, preferencesRepository),
+            getMovieDetails = GetMovieDetails(repository, preferencesRepository)
         )
     }
 }

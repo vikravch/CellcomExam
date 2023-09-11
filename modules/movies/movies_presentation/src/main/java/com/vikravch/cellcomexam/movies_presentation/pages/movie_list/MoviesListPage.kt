@@ -1,6 +1,5 @@
 package com.vikravch.cellcomexam.movies_presentation.pages.movie_list
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,47 +16,82 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.vikravch.cellcomexam.core_ui.theme.CellcomExamTheme
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vikravch.cellcomexam.core_ui.components.FilterMode
 import com.vikravch.cellcomexam.core_ui.components.FilterSwitcher
+import com.vikravch.cellcomexam.movies_presentation.pages.movie_list.components.InfiniteMoviesList
+import com.vikravch.cellcomexam.movies_presentation.pages.movie_list.components.MovieItem
 
 @Composable
 fun MoviesListPage(
+    onSelectMovie: (Int) -> Unit,
     viewModel: MoviesListViewModel = hiltViewModel()
 ) {
-    val (filter, setFilter) = remember { mutableStateOf(0) }
+    val (filter, setFilter) = remember { mutableStateOf<FilterMode>(FilterMode.Popular) }
 
     LaunchedEffect(key1 = true){
         viewModel.onEvent(MoviesListEvent.LoadPopularMovies)
+        viewModel.onEvent(MoviesListEvent.LoadCurrentlyBroadcastMovies)
+        viewModel.onEvent(MoviesListEvent.LoadFavouriteMovies)
     }
-    Log.d("MoviesListViewModel", "MoviesListPage: ${viewModel.state.movies}")
     CellcomExamTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
         ) {
             Column{
+
+                if(viewModel.state.error != null){
+                    Text(text = viewModel.state.error?.message?: "Unknown error")
+                }
+
                 FilterSwitcher(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.White),
-                    text = "Filter by:",
                     onSwitch = {
                         setFilter(it)
                         when(it){
-                            0 -> viewModel.onEvent(MoviesListEvent.LoadPopularMovies)
-                            1 -> viewModel.onEvent(MoviesListEvent.LoadCurrentlyBroadcastMovies)
-                            2 -> viewModel.onEvent(MoviesListEvent.LoadFavouriteMovies)
+                            FilterMode.BroadcastNow -> viewModel.onEvent(MoviesListEvent.LoadPopularMovies)
+                            FilterMode.Favourite -> viewModel.onEvent(MoviesListEvent.LoadCurrentlyBroadcastMovies)
+                            FilterMode.Popular -> viewModel.onEvent(MoviesListEvent.LoadFavouriteMovies)
                         }
                     },
                     selected = filter
                 )
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                ){
-                    /*items(viewModel.state.movies.size) { index ->
-                        Text(text = viewModel.state.movies[index].backdropPath)
-                    }*/
-                    viewModel.state.movies.forEach { movie ->
-                        item{
-                            Text(text = movie.title)
+                when(filter){
+                    FilterMode.Popular -> {
+                        InfiniteMoviesList(listItems = viewModel.state.popularFilms,
+                            toggleFavourite = {
+                                viewModel.onEvent(MoviesListEvent.ToggleFavouriteMovie(it, filter))
+                            },
+                            onLoadMore = {
+                                viewModel.onEvent(MoviesListEvent.LoadMorePopularMovies)
+                            },
+                            onSelectMovie = onSelectMovie
+                        )
+                    }
+                    FilterMode.BroadcastNow -> {
+                        InfiniteMoviesList(listItems = viewModel.state.broadcastFilms,
+                            toggleFavourite = {
+                                viewModel.onEvent(MoviesListEvent.ToggleFavouriteMovie(it, filter))
+                            },
+                            onLoadMore = {
+                                viewModel.onEvent(MoviesListEvent.LoadMoreCurrentlyBroadcastMovies)
+                            },
+                            onSelectMovie = onSelectMovie
+                        )
+                    }
+                    FilterMode.Favourite -> {
+                        LazyColumn {
+                            val movies = viewModel.state.favouriteMovies
+                            movies.forEach { movie ->
+                                item{
+                                    MovieItem(movie = movie,
+                                        onSelectMovie = onSelectMovie,
+                                        toggleFavourite = {
+                                            viewModel.onEvent(MoviesListEvent.ToggleFavouriteMovie(movie, filter))
+                                        })
+                                }
+                            }
                         }
                     }
                 }
@@ -69,5 +103,7 @@ fun MoviesListPage(
 @Preview
 @Composable
 fun MoviesListPagePreview() {
-    MoviesListPage()
+    MoviesListPage(
+        onSelectMovie = {}
+    )
 }

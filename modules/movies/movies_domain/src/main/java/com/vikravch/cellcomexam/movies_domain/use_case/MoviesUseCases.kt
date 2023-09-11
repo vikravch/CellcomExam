@@ -4,5 +4,6 @@ data class MoviesUseCases(
     val getPopularFilms: GetPopularFilms,
     val markAsFavourite: ToggleFavourite,
     val getFavouriteFilms: GetFavouriteFilms,
-    val getCurrentlyBroadcastFilms: GetCurrentlyBroadcastFilms
+    val getCurrentlyBroadcastFilms: GetCurrentlyBroadcastFilms,
+    val getMovieDetails: GetMovieDetails
 )

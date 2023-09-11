@@ -1,6 +1,8 @@
 package com.vikravch.cellcomexam.movies_domain.model
 
-class Movie (
+import com.google.gson.Gson
+
+data class Movie (
     val adult: Boolean,
     val backdropPath: String,
     val genreIds: List<Int>,
@@ -15,12 +17,38 @@ class Movie (
     val video: Boolean,
     val voteAverage: Double,
     val voteCount: Int,
-    val isFavourite: Boolean = false
+    var isFavourite: Boolean = false
 ){
+    fun toJSON(): String{
+        return Gson().toJson(this)
+    }
     override fun toString(): String {
         return "Movie(adult=$adult, backdropPath='$backdropPath', genreIds=$genreIds, id=$id, originalLanguage='$originalLanguage', originalTitle='$originalTitle', overview='$overview', popularity=$popularity, posterPath='$posterPath', releaseDate='$releaseDate', title='$title', video=$video, voteAverage=$voteAverage, voteCount=$voteCount, isFavourite=$isFavourite)"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Movie
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id
+    }
+
+    companion object{
+        fun fromJSON(json: String): Movie{
+            return Gson().fromJson(json, Movie::class.java)
+        }
+    }
 }
+
+
 
 /*
 {

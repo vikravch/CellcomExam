@@ -6,18 +6,18 @@ import com.vikravch.cellcomexam.movies_domain.model.Movie
 fun MovieDTO.toMovie(): Movie{
     return Movie(
         id = id,
-        title = title,
-        overview = overview,
-        posterPath = posterPath,
-        backdropPath = backdropPath,
-        releaseDate = releaseDate,
-        voteAverage = voteAverage,
-        voteCount = voteCount,
-        popularity = popularity,
-        adult = adult,
-        originalLanguage = originalLanguage,
-        originalTitle = originalTitle,
-        video = video,
-        genreIds = genreIds
+        title = title?:"No title",
+        overview = overview?:"No overview",
+        posterPath = posterPath?: "",
+        backdropPath = backdropPath?: "",
+        releaseDate = releaseDate?:"No release date",
+        voteAverage = voteAverage?: 0.0,
+        voteCount = voteCount?: 0,
+        popularity = popularity?: 0.0,
+        adult = adult?: false,
+        originalLanguage = originalLanguage?:"No original language",
+        originalTitle = originalTitle?:"No original title",
+        video = video?: false,
+        genreIds = genreIds?: listOf()
     )
 }

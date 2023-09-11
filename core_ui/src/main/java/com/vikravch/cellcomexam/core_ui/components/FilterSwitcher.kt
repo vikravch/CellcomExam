@@ -1,5 +1,7 @@
 package com.vikravch.cellcomexam.core_ui.components
 
+import com.vikravch.cellcomexam.core_ui.R
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,17 +13,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+sealed interface FilterMode{
+    object Popular: FilterMode
+    object BroadcastNow: FilterMode
+    object Favourite: FilterMode
+}
 @Composable
 fun FilterSwitcher(
     modifier: Modifier = Modifier,
-    text: String = "Filter by:",
-    selected: Int,
-    onSwitch: (Int) -> Unit
+    selected: FilterMode,
+    onSwitch: (FilterMode) -> Unit
 ) {
     val activeModifier = Modifier
         .background(
@@ -39,7 +46,8 @@ fun FilterSwitcher(
         .width(100.dp)
         .height(24.dp)
 
-    Row(modifier = modifier.height(52.dp)
+    Row(modifier = modifier
+        .height(52.dp)
         .background(
             shape = RoundedCornerShape(8.dp),
             color = White
@@ -48,49 +56,54 @@ fun FilterSwitcher(
         .padding(end = 20.dp)
 
         , verticalAlignment = Alignment.CenterVertically) {
-        Text(text =text, modifier = Modifier.padding(start = 20.dp))
-        Spacer(modifier = Modifier.weight(1f))
         Row(modifier = Modifier
             .background(
                 color = White,
                 shape = RoundedCornerShape(8.dp),
-            )) {
+            )
+            .fillMaxWidth()) {
             Box(
-                modifier = (if(selected == 0) activeModifier else unactiveModifier).clickable {
-                    onSwitch(0)
-                },
+                modifier = (if (selected == FilterMode.Popular) activeModifier else unactiveModifier)
+                    .clickable {
+                        onSwitch(FilterMode.Popular)
+                    }
+                    .fillMaxWidth(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Popular",
+                Text(text = stringResource(id = R.string.popular_filter_tab),
                     textAlign = TextAlign.Center,
                     fontSize = 10.sp,
-                    color = if(selected == 0) White else Black,
+                    color = if(selected == FilterMode.Popular) White else Black,
                     modifier = Modifier
                         .width(100.dp))
             }
+            Spacer(modifier = Modifier.weight(1f))
             Box(
-                modifier = (if(selected == 1) activeModifier else unactiveModifier).clickable {
-                    onSwitch(1)
-                },
+                modifier = (if (selected == FilterMode.BroadcastNow) activeModifier else unactiveModifier)
+                    .clickable {
+                        onSwitch(FilterMode.BroadcastNow)
+                    }
+                    .fillMaxWidth(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Broadcast NOW",
+                Text(text = stringResource(id = R.string.broadcast_now_filter_tab),
                     textAlign = TextAlign.Center,
                     fontSize = 10.sp,
-                    color = if(selected == 1) White else Black,
+                    color = if(selected == FilterMode.BroadcastNow) White else Black,
                     modifier = Modifier
                         .width(100.dp))
                 }
+            Spacer(modifier = Modifier.weight(1f))
             Box(
-                modifier = (if(selected == 2) activeModifier else unactiveModifier).clickable {
-                    onSwitch(2)
+                modifier = (if(selected == FilterMode.Favourite) activeModifier else unactiveModifier).clickable {
+                    onSwitch(FilterMode.Favourite)
                 },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "My favorites",
+                Text(text = stringResource(id = R.string.my_favourites_filter_tab),
                     textAlign = TextAlign.Center,
                     fontSize = 10.sp,
-                    color = if(selected == 2) White else Black,
+                    color = if(selected == FilterMode.Favourite) White else Black,
                     modifier = Modifier
                         .width(100.dp))
             }
@@ -106,9 +119,8 @@ fun EdenSwitcherPreview0() {
         modifier = Modifier
             .fillMaxWidth()
             .background(White),
-        text = "Filter by:",
         onSwitch = {},
-        selected = 0
+        selected = FilterMode.Popular
     )
 }
 
@@ -119,9 +131,8 @@ fun EdenSwitcherPreview1() {
         modifier = Modifier
             .fillMaxWidth()
             .background(White),
-        text = "Filter by:",
         onSwitch = {},
-        selected = 1
+        selected = FilterMode.BroadcastNow
     )
 }
 
@@ -132,8 +143,7 @@ fun EdenSwitcherPreview2() {
         modifier = Modifier
             .fillMaxWidth()
             .background(White),
-        text = "Filter by:",
         onSwitch = {},
-        selected = 2
+        selected = FilterMode.Favourite
     )
 }

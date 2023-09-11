@@ -7,9 +7,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.vikravch.cellcomexam.core_ui.theme.CellcomExamTheme
 import com.vikravch.cellcomexam.movies_presentation.pages.movie_detail.MovieDetailPage
 import com.vikravch.cellcomexam.movies_presentation.pages.movie_list.MoviesListPage
@@ -20,40 +22,25 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
             val navController = rememberNavController()
-
             CellcomExamTheme {
-                NavHost(navController = navController, startDestination = "home") {
-                    composable("home") {
-                        /*Surface(
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            Text(text = "Movies List Page")
-                        }*/
-                        MoviesListPage()
+                NavHost(navController = navController, startDestination = Route.MOVIES) {
+                    composable(Route.MOVIES) {
+                        MoviesListPage(
+                            onSelectMovie = {
+                                navController.navigate(Route.MOVIE_DETAILS_DOMAIN+"/"+it)
+                            }
+                        )
                     }
-                    composable("details") {
-                        MovieDetailPage()
+                    composable(Route.MOVIE_DETAILS, arguments = listOf(navArgument("id") {
+                        type = NavType.StringType
+                    })) { backStackEntry ->
+                        MovieDetailPage(
+                            id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+                        )
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CellcomExamTheme {
-        Greeting("Android")
     }
 }

@@ -1,7 +1,7 @@
 package com.vikravch.cellcomexam.core.preferences
 
 interface PreferencesRepository {
-    suspend fun markAsFavourite(movieId: Int): Result<Void?>
-    suspend fun unmarkAsFavourite(movieId: Int): Result<Void?>
-    suspend fun getFavouriteFilms(): Result<Set<Int>>
+    suspend fun markAsFavourite(id: Int, movieSerializedData: String): Result<Void?>
+    suspend fun unmarkAsFavourite(id: Int, movieSerializedData: String): Result<Void?>
+    suspend fun getFavouriteFilms(): Result<Set<String>>
 }

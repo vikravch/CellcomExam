@@ -1,6 +1,5 @@
 package com.vikravch.cellcomexam.movies_presentation.pages.movie_list
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -24,11 +23,15 @@ class MoviesListViewModel @Inject constructor(
             MoviesListEvent.LoadPopularMovies -> {
                 viewModelScope.launch{
                     val res = moviesUseCases.getPopularFilms()
-                    if(res.isSuccess) {
-                        state = state.copy(
-                            movies = res.getOrNull()?: emptyList()
+                    state = if(res.isSuccess) {
+                        state.copy(
+                            popularFilms = res.getOrNull()?: emptyList(),
+                            error = null
                         )
-                        Log.d("MoviesListViewModel", "onEvent: ${state.movies}")
+                    } else {
+                        state.copy(
+                            error = res.exceptionOrNull()
+                        )
                     }
                 }
             }
@@ -36,23 +39,96 @@ class MoviesListViewModel @Inject constructor(
             MoviesListEvent.LoadCurrentlyBroadcastMovies -> {
                 viewModelScope.launch{
                     val res = moviesUseCases.getCurrentlyBroadcastFilms()
-                    if(res.isSuccess) {
-                        state = state.copy(
-                            movies = res.getOrNull()?: emptyList()
+                    state = if(res.isSuccess) {
+                        state.copy(
+                            broadcastFilms = res.getOrNull()?: emptyList(),
+                            error = null
                         )
-                        Log.d("MoviesListViewModel", "onEvent: ${state.movies}")
+                    } else {
+                        state.copy(
+                            error = res.exceptionOrNull()
+                        )
                     }
                 }
             }
             MoviesListEvent.LoadFavouriteMovies -> {
                 viewModelScope.launch{
                     val res = moviesUseCases.getFavouriteFilms()
-                    if(res.isSuccess) {
-                        state = state.copy(
-                            movies = res.getOrNull()?: emptyList()
+                    state = if(res.isSuccess) {
+                        state.copy(
+                            favouriteMovies = res.getOrNull()?: emptyList(),
+                            error = null
                         )
-                        Log.d("MoviesListViewModel", "onEvent: ${state.movies}")
+                    } else {
+                        state.copy(
+                            error = res.exceptionOrNull()
+                        )
                     }
+                }
+            }
+            MoviesListEvent.LoadMorePopularMovies -> {
+                viewModelScope.launch{
+                    val nextPage = state.popularFilmsPage + 1
+                    val res = moviesUseCases.getPopularFilms(nextPage)
+                    state = if(res.isSuccess) {
+                        state.copy(
+                            popularFilms = state.popularFilms + (res.getOrNull()?: emptyList()),
+                            popularFilmsPage = nextPage,
+                            error = null
+                        )
+                    } else {
+                        state.copy(
+                            error = res.exceptionOrNull()
+                        )
+                    }
+                }
+            }
+            MoviesListEvent.LoadMoreCurrentlyBroadcastMovies -> {
+                viewModelScope.launch{
+                    val nextPage = state.broadcastFilmsPage + 1
+                    val res = moviesUseCases.getCurrentlyBroadcastFilms(nextPage)
+                    state = if(res.isSuccess) {
+                        state.copy(
+                            broadcastFilms = state.broadcastFilms + (res.getOrNull()?: emptyList()),
+                            broadcastFilmsPage = nextPage,
+                            error = null
+                        )
+                    } else {
+                        state.copy(
+                            error = res.exceptionOrNull()
+                        )
+                    }
+                }
+            }
+
+            is MoviesListEvent.ToggleFavouriteMovie -> {
+                viewModelScope.launch {
+                    val movie = event.movie
+                    movie.isFavourite = !event.movie.isFavourite
+
+                    val newPopularMovies = state.popularFilms.map {
+                        if(it.id == event.movie.id) {
+                            movie
+                        } else {
+                            it
+                        }
+                    }
+                    val newBroadcastMovies = state.broadcastFilms.map {
+                        if(it.id == event.movie.id) {
+                            movie
+                        } else {
+                            it
+                        }
+                    }
+                    val newFavouriteMovies = state.favouriteMovies.filter {
+                        it.id != event.movie.id
+                    }
+                    state = state.copy(
+                        popularFilms = newPopularMovies,
+                        broadcastFilms = newBroadcastMovies,
+                        favouriteMovies = newFavouriteMovies
+                    )
+                    moviesUseCases.markAsFavourite(movie)
                 }
             }
         }

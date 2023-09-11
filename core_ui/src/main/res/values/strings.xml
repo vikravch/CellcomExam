@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="popular_filter_tab">Popular</string>
+    <string name="broadcast_now_filter_tab">Broadcast NOW</string>
+    <string name="my_favourites_filter_tab">My favorites</string>
+</resources>

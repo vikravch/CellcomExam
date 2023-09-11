@@ -6,10 +6,9 @@ import com.vikravch.cellcomexam.movies_domain.model.Movie
 class ToggleFavourite(
     private val preferencesRepository: PreferencesRepository
 ) {
-
     suspend operator fun invoke(movie: Movie): Result<Void?> {
         return if(movie.isFavourite)
-            preferencesRepository.markAsFavourite(movie.id)
-        else preferencesRepository.unmarkAsFavourite(movie.id)
+            preferencesRepository.markAsFavourite(movie.id, movie.toJSON())
+        else preferencesRepository.unmarkAsFavourite(movie.id, movie.toJSON())
     }
 }
