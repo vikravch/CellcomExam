@@ -30,57 +30,17 @@ android {
     compileOptions {
         coreLibraryDesugaringEnabled true
 
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
         freeCompilerArgs = ["-Xjvm-default=compatibility"]
     }
 
 }
 
 dependencies {
-    implementation Compose.compiler
-    implementation Compose.ui
-    implementation Compose.uiToolingPreview
-    implementation Compose.hiltNavigationCompose
-    implementation Compose.material
-    implementation Compose.runtime
-    implementation Compose.navigation
-    implementation Compose.viewModelCompose
-    implementation Compose.activityCompose
-
-    // Jetpack compose
-    implementation Compose.ui
-    // Tooling support (Previews, etc.)
-    implementation Compose.uiTooling
-    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation Compose.foundation
-    // Material Design
-    implementation Compose.material
-    // Material design icons
-    implementation Compose.materialIcons
-    implementation Compose.materialIconsExtended
-    // Integration with observables
-    implementation Compose.runtimeLivedata
-    // implementation(Compose.runtimeRxjava3)
-    // UI Tests
-    androidTestImplementation Compose.uiTest
-    // Compose
-    // Constraint Layout
-    implementation Compose.constraintLayout
-
-    // Hilt viewmodel
-    implementation Compose.viewModel
-    // Glide
-    //implementation "com.github.skydoves:landscapist-glide:1.4.0"
-    // Coil
-    implementation Compose.coil
-
-    implementation Compose.hiltNavigationCompose
-    implementation Compose.navigation
-
     kapt DaggerHilt.hiltCompiler
     implementation DaggerHilt.hiltAndroid
 
@@ -102,11 +62,21 @@ dependencies {
     androidTestImplementation Testing.mockk
     androidTestImplementation Testing.mockWebServer
     androidTestImplementation Testing.hiltTesting
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.6'
-    implementation "androidx.navigation:navigation-compose:2.5.3"
 
-    implementation "io.coil-kt:coil-compose:2.3.0"
+    implementation Coroutines.coroutines
+    implementation Coil.coilCompose
 
-    // Kotlinx DateTime
-    implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.3.0"
+    implementation Compose.lifecycleRuntime
+    implementation Compose.activityCompose
+
+    implementation platform(Compose.composeBom)
+    implementation Compose.ui
+    implementation Compose.uiGraphics
+    implementation Compose.uiToolingPreview
+    implementation Compose.material3
+    debugImplementation Compose.uiTooling
+    debugImplementation Compose.uiTestManifest
+    debugImplementation Compose.uiTestJunit4
+
+    implementation Compose.hiltNavigationCompose
 }

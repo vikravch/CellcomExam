@@ -44,9 +44,7 @@ class MovieDetailsViewModel @Inject constructor(
                         movie = null,
                         error = null
                     )
-                    Log.d("MovieDetailsViewModel", "onEvent before: ${event.movie}")
                     val newMovie = event.movie.copy(isFavourite = (!event.movie.isFavourite))
-                    Log.d("MovieDetailsViewModel", "onEvent newMovie: $newMovie")
                     moviesUseCases.markAsFavourite(newMovie)
                     state = state.copy(
                         movie = newMovie,
